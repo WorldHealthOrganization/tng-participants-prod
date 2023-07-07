@@ -29,7 +29,7 @@ env:
   ARM_CLIENT_ID: ${{secrets.AZURE_CLIENT_ID}}
   ARM_SUBSCRIPTION_ID: ${{secrets.AZURE_SUBSCRIPTION_ID}}
   ARM_TENANT_ID: ${{secrets.AZURE_TENANT_ID}}
-  CURRENT_ENV: ${{ env.ENV_CONTEXT_VAR }}
+  CURRENT_ENV: ${{vars.ENV_CONTEXT_VAR}}
   TF_STATE_CONTAINER_NAME: terraform-participants
   TF_STATE_BLOBKEY: participants.tfstate
 
