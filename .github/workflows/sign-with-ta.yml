@@ -53,7 +53,7 @@ jobs:
       - name: push changes
         if: ${{ !inputs.dry_run }}
         run: |
-          git config --global user.name 'tng-bot-dev'
+          git config --global user.name 'tng-bot'
           git config --global user.email '$BOT_EMAIL'
           git add .
           git commit -m "Signed with TNG Trust Anchor"
