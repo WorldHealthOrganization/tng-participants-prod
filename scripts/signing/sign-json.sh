@@ -185,10 +185,10 @@ do
 			echo "           Skipping Text Output"
 		    fi
 			# clean up temporary data
-			for delTMP in ${CERTPATHCOMP}/signed/*.der ${CERTPATHCOMP}/signed/*.csr ${CERTPATHCOMP}/*.csr ; do
-				#echo cleaning up... $delTMP
-				rm -rf $delTMP
-		 	done
+			#for delTMP in ${CERTPATHCOMP}/signed/*.der ${CERTPATHCOMP}/signed/*.csr ${CERTPATHCOMP}/*.csr ; do
+			#	#echo cleaning up... $delTMP
+			#	rm -rf $delTMP
+		 	#done
 		done
 
 	for CERTPATH in $USAGEDIR/UP_SYNC.csr
