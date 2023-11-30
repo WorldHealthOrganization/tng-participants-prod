@@ -186,8 +186,8 @@ do
 		    fi
 			# clean up temporary data
 			for delTMP in ${CERTPATHCOMP}/signed/*.der ${CERTPATHCOMP}/signed/*.csr ${CERTPATHCOMP}/*.csr ; do
-				#echo cleaning up... $delTMP
-				rm -rf $delTMP
+				echo not cleaning up... $delTMP
+				#rm -rf $delTMP
 		 	done
 		done
 
