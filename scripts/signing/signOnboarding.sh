@@ -34,10 +34,9 @@ CASDIR=$($REALPATH ${CASDIR})
 
 
 git switch main
-
 BRANCHES=$(git branch -v  --no-color --list "*/onboardingRequest")
 echo Scanning Branches: $BRANCHES
-
+printf '  branch info: %s\n' "${BRANCHES[@]}"
 
 while IFS= read -r BRANCHLIST
 do
@@ -46,8 +45,11 @@ do
     echo Checking branch: $BRANCH for $PCODE
 
     git switch $BRANCH
+    set +e
     TAGS=`git log --decorate=full -1 HEAD | head -1 | sed 's/.*(\(.*\))/\1/' | sed -E 's/,[[:space:]]+/\n/g' | grep -o '^tag: refs\/tags\/signingRequest-.*' | grep -o 'signingRequest-.*'`
+    set -e
     echo Last commit has following tags: $TAGS
+    printf '  tag info: %s\n' "${TAGS[@]}"
     while IFS= read -r TAG
     do
 	echo Found signing tag, initiating signature process: $TAG
