@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -e
 
-REALPATH=/bin/realpath
 BASENAME=/usr/bin/basename
 DIRNAME=/usr/bin/dirname
 SED=/opt/local/bin/gsed
@@ -33,7 +32,7 @@ if [[ ! -d $CASDIR ]]; then
     echo "       Missing first parameter is path to directory containing private keys"
     exit 1
 fi
-CASDIR=$($REALPATH ${CASDIR})
+CASDIR=$(realpath ${CASDIR})
 
 KEYTYPESTOSIGN=("onboarding")
 CURRDIR=$PWD
@@ -75,7 +74,7 @@ function exists_in_list() { # call: list, item-delimter, value-to-compare
     [[ "$LIST" =~ ($DELIMITER|^)$VALUE($DELIMITER|$) ]]
 }
 
-#ROOT=$($REALPATH $(dirname $(dirname $(dirname ${BASH_SOURCE[0]}))))
+#ROOT=$(realpath $(dirname $(dirname $(dirname ${BASH_SOURCE[0]}))))
 echo "Examining contents of $CURRDIR";
 for DIR in $CURRDIR/*
 do
