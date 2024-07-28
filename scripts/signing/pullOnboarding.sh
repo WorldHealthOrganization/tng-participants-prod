@@ -43,7 +43,7 @@ echo "Open Pull Requests for $ASSIGNEE: $REFS"
 PCODES=()
 while IFS= read -r REF
 do
-    if [[ !  -z "${REF// }" ]] ; then
+    if [[  -z "${REF// }" ]] ; then
 	echo "Warning empty reference - may be because no open PRs"
 	continue
     fi
