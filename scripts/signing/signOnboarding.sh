@@ -16,6 +16,7 @@ SOURCEDIR=$(realpath $($DIRNAME ${BASH_SOURCE[0]}))
 SRCSIGNSCRIPT=$SOURCEDIR/sign-json.sh
 SIGNSCRIPT=/tmp/`uuid`.sh
 cp "$SRCSIGNSCRIPT" $SIGNSCRIPT
+chmod +x $SIGNSCRIPT
 
 echo $SIGNSCRIPT
 
@@ -34,14 +35,14 @@ CASDIR=$(realpath ${CASDIR})
 
 
 git switch main
-BRANCHES=$(git branch -v  --no-color --list "*/onboardingRequest")
+BRANCHES=$(git branch -v  --no-color --list "*/onboardingRequest" "*/resign")
 echo Scanning Branches: $BRANCHES
 printf '  branch info: %s\n' "${BRANCHES[@]}"
 
 while IFS= read -r BRANCHLIST
 do
     BRANCH=$(echo $BRANCHLIST | grep -o '^\S*')
-    PCODE=$(echo $BRANCH  | sed 's/\/onboardingRequest//')
+    PCODE=$(echo $BRANCH  | sed 's/\/onboardingRequest//;s/\/resign//')
     echo Checking branch: $BRANCH for $PCODE
 
     git switch $BRANCH
