@@ -20,7 +20,9 @@ fi
 ASSIGNEEEMAIL="$1@who.int"
 
 
-REMOTE=$(git ls-remote --get-url origin | sed 's/^.*://g' | sed 's/\.git$//')
+#REMOTE=$(git ls-remote --get-url origin | sed 's/^.*://g' | sed 's/\.git$//')
+REMOTE=$(git ls-remote --get-url origin | sed 's/^.*github\.com\///g' | sed 's/\.git$//')
+
 echo Remote: $REMOTE
 echo ${BASH_SOURCE[0]}
 #ROOT=$($REALPATH $($DIRNAME $($DIRNAME  $($DIRNAME   ${BASH_SOURCE[0]}))))
