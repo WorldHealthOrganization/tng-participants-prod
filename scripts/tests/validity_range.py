@@ -9,7 +9,6 @@ def test_validity_range(cert):
     '''
     validity = cert.x509.not_valid_after - cert.x509.not_valid_before
     
-    #if cert.pathinfo.get('group').upper() == 'SCA':
     if cert.pathinfo.get('group').upper() == 'SCA' \
         or cert.pathinfo.get('group').upper() == 'DECA':
         min_years, max_years = 2, 4
