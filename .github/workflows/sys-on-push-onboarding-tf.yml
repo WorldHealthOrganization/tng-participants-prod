@@ -39,7 +39,7 @@ jobs:
     environment: ${{ vars.ENV_CONTEXT_VAR }}
     steps:
       - name: 'Az CLI login'
-        uses: azure/login@v1
+        uses: azure/login@a457da9ea143d694b1b9c7c869ebb04ebe844ef5 #v2.3.0
         with:
           client-id: ${{env.ARM_CLIENT_ID}}
           tenant-id: ${{env.ARM_TENANT_ID}}
@@ -47,12 +47,12 @@ jobs:
 
       # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
+        uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd #v3.1.2
         with:
           terraform_wrapper: false
 
       - name: 'Setup jq'
-        uses: dcarbone/install-jq-action@v1.0.1
+        uses: dcarbone/install-jq-action@b7ef57d46ece78760b4019dbc4080a1ba2a40b45 #3.2.0
         with:
           version: '1.6'
           force: false
@@ -128,7 +128,7 @@ jobs:
           fi
           echo "##############################################################"
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 #v5.0.0
 
       # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
       - name: Terraform Init
@@ -165,16 +165,16 @@ jobs:
 
       # Use kubelogin to configure your kubeconfig for Azure auth
       - name: Set up kubelogin for non-interactive login
-        uses: azure/use-kubelogin@v1
+        uses: azure/use-kubelogin@76597ae0fcbaace21b05e13a2cbf8daee2c6e820 #v1.2
         with:
           kubelogin-version: 'v0.0.25'
 
       - name: Setup kubectl
         id: install-kubectl
-        uses: azure/setup-kubectl@v3
+        uses: azure/setup-kubectl@776406bce94f63e41d621b960d78ee25c8b76ede #v4.0.1
 
       - name: Set context
-        uses: azure/aks-set-context@v3
+        uses: azure/aks-set-context@c7eb093e5a5d47caa333f64974d5fd1cd4bf069d #4.0.3
         with:
           resource-group: ${{ env.TNG_RESOURCE_GROUP_NAME }}
           cluster-name: ${{steps.naming.outputs.aks_cluster_name}}
