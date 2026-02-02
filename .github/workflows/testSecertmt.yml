@@ -11,10 +11,14 @@ jobs:
         run: |
           mkdir -p secrets/test1
           
+          # Loop through all GitHub secrets and write them directly to files
           for secret_name in $(jq -r 'keys[]' <<< '${{ toJson(secrets) }}'); do
             secret_value=$(jq -r --arg k "$secret_name" '.[$k]' <<< '${{ toJson(secrets) }}')
+            # Sanitize the secret name for safe filenames
             safe_name=$(echo "$secret_name" | tr -cd '[:alnum:]_-')
+            # Write the raw secret value directly to a file
             echo -n "$secret_value" > "secrets/test1/${safe_name}.txt"
+            # Print a preview in logs (first 60 chars) so you can confirm
             preview=$(echo -n "$secret_value" | cut -c1-60)
             echo "Created ${safe_name}.txt → ${preview}..."
           done
@@ -22,21 +26,8 @@ jobs:
           echo "List created files:"
           ls -lh secrets/test1
 
-      - name: Push decoded secrets to private repo (secrets-artifacts branch)
-        run: |
-          git init
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
-
-          # Create or reset the secrets-artifacts branch
-          git checkout -b secrets-artifacts
-
-          # Copy decoded secrets into repo root
-          cp -r secrets/test1 .
-
-          git add test1
-          git commit -m "Add decoded secrets from workflow run"
-
-          # Push only to secrets-artifacts branch of the private repo
-          git remote add origin https://x-access-token:${{ secrets.EXT_SECRETS_REPO_TOKEN }}@github.com/WorldHealthOrganization/tng-participants-secrets.git
-          git push origin secrets-artifacts --force
+      - name: Upload decoded secrets as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: secrets-test1-decoded
+          path: secrets/test1
