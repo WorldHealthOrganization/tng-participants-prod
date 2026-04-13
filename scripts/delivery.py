@@ -46,7 +46,15 @@ if __name__=='__main__':
                                      flag='😄', name='Test IO', numeric='9995', official_name='Test Country IO' )                                 
     countries = list(pycountry.countries)
 
-    branches = os.popen("git ls-remote --heads").read()
+    # Fix pOpen Handling to stop PR Creation when git fails with errors
+    p = os.popen("git ls-remote --heads")
+    branches =p.read()
+    status = p.close()
+    if status is not None:
+            print("Skip Process because git is not properly responding")
+            sys.exit(1)
+    
+    print("Status:" , status)
     print ("branches found:")
     print(branches)
 
