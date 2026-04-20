@@ -56,7 +56,7 @@ jobs:
           REPO_TOKEN: ${{ secrets.EXT_SECRETS_REPO_TOKEN }}
         with:
           repository: WorldHealthOrganization/tng-participants-secrets
-          ref: feature/encrypt-secret-test
+          ref: main
           path: participants-secrets
           token: ${{ secrets.EXT_SECRETS_REPO_TOKEN }}
 
