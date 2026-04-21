@@ -35,7 +35,7 @@ if __name__=='__main__':
         print("Error: 'countries.json' contains invalid JSON.", file=sys.stderr)
         sys.exit(1)
         
-    doc = json.loads(os.environ.get("SECRETS"), strict=False)
+  #  doc = json.loads(os.environ.get("SECRETS"), strict=False)
     
     add_country(pycountry.countries, alpha_2='XA', alpha_3='XXA', common_name='Test XA', 
                                      flag='😄', name='Test XA', numeric='23233', official_name='Test Country XA' ) 
