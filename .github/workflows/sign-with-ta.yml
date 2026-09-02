@@ -1,60 +1,56 @@
-# This is a workflow to support automated signing with TNG Trust Anchor for DEV and UAT environments.
+name: Sign onboarding request
 
-name: Sign certificates with TNG Trust Anchor (DEV/UAT)
 on:
-  workflow_dispatch: #manual trigger
+  workflow_dispatch:
     inputs:
-      environment:
-        description: 'Environment to run the deployment against'
-        type: environment
+      branch:
+        description: Branch to switch to before listing artifacts
         required: true
-      country_alpha3:
-        description: 'Country to run the singing for'
+        default: XXH/onboardingRequest
         type: string
-        required: false
-      dry_run:
-        description: 'Run workflow without pushing to GitHub'
-        type: boolean
-        required: false
+      signing_keys_repository:
+        description: Owner/repo for the signing keys repository
+        required: true
+        default: kotharikaushal/tng-participants-dev-signing-keys
+        type: string
+      github_pat:
+        description: PAT with access to the private signing keys repository
+        required: true
+        type: string
 
 permissions:
-  id-token: write
-  contents: write
-  pull-requests: write
+  contents: read
 
 env:
-  BOT_EMAIL: ${{secrets.BOT_EMAIL_GITHUB}}
-  TNG_TA_PRIVATE_KEY: ${{secrets.TNG_TA_PRIVATE_KEY}}
-  TNG_TA_CA: ${{secrets.TNG_TA_CA}}
-
+  BOT_USERNAME: tng-bot
 
 jobs:
-  tng_ta_sign:
-    name: 'TNG TA Sign for DEV and UAT'
+  sign_onboarding:
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
     steps:
-
-      - name: Checkout Code
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 #v7.0.0
+      - name: Checkout tng-participants-prod
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           fetch-depth: 0
 
-      - name: Sign
-        run: |
-          mkdir -p ./cas/TA/private
-          mkdir -p ./cas/TA/certs
-          cp ./scripts/signing/openssl.conf ./cas/TA/openssl.conf
-          echo "${{env.TNG_TA_PRIVATE_KEY}}" > ./cas/TA/private/TNG_TA.key.pem
-          echo "${{env.TNG_TA_CA}}" > ./cas/TA/certs/TNG_TA.pem
-          ./scripts/signing/sign-json.sh ./ ${{inputs.country_alpha3}}
-          rm -rf ./cas
+      - name: Checkout tng-participants-dev-signing-keys
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          repository: ${{ inputs.signing_keys_repository }}
+          path: tng-participants-dev-signing-keys
+          token: ${{ inputs.github_pat }}
 
-      - name: push changes
-        if: ${{ !inputs.dry_run }}
+      - name: Pull and sign onboarding
+        shell: bash
         run: |
-          git config --global user.name 'tng-bot'
-          git config --global user.email '$BOT_EMAIL'
-          git add .
-          git commit -m "Signed with TNG Trust Anchor"
-          git push
+          set -euo pipefail
+          ./scripts/signing/pullOnboarding.sh "$BOT_USERNAME"
+          ./scripts/signing/signOnboarding.sh tng-participants-dev-signing-keys
+
+      - name: Switch branch and show signed file
+        shell: bash
+        run: |
+          set -euo pipefail
+          git switch "${{ inputs.branch }}"
+          ls -lR XXH
+          cat XXH/onboarding/DCC/TLS/signed/TNG_TA.signed.TLS.json
