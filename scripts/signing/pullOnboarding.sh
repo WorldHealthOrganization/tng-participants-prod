@@ -20,7 +20,8 @@ fi
 ASSIGNEEEMAIL="$1@who.int"
 
 
-REMOTE=$(git ls-remote --get-url origin | sed 's/^.*://g' | sed 's/\.git$//')
+REMOTE_URL=$(git ls-remote --get-url origin)
+REMOTE=$(echo "$REMOTE_URL" | sed -E 's#^git@github\.com:##; s#^https://github\.com/##; s#\.git$##')
 #REMOTE=$(git ls-remote --get-url origin | sed 's/^.*github\.com\///g' | sed 's/\.git$//')
 
 echo Remote: $REMOTE
@@ -35,9 +36,9 @@ git fetch --all
 
 
 REFS=$(curl  -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/$REMOTE/pulls\?state=open \
-	   | jq ".[] | select( .assignee.login == \"$ASSIGNEE\").head.ref" \
-	   | grep "onboardingRequest\|resign"   \
-	   | sed 's/\"//g'
+	   | jq -r --arg assignee "$ASSIGNEE" 'if type == "array" then .[] else empty end | select((((.assignee.login // "") == $assignee) or any(.assignees[]?; .login == $assignee))) | .head.ref' \
+	   | grep "onboardingRequest\|resign"   
+	   
     )
 echo "Open Pull Requests for $ASSIGNEE: ${REFS[*]}"
 
