@@ -37,7 +37,7 @@ git fetch --all
 
 REFS=$(curl  -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/$REMOTE/pulls\?state=open \
 	   | jq -r --arg assignee "$ASSIGNEE" 'if type == "array" then .[] else empty end | select((((.assignee.login // "") == $assignee) or any(.assignees[]?; .login == $assignee))) | .head.ref' \
-	   | grep "onboardingRequest\|resign"   \
+	   | grep "onboardingRequest\|resign"   
 	   
     )
 echo "Open Pull Requests for $ASSIGNEE: ${REFS[*]}"
